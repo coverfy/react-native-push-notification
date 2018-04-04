@@ -102,6 +102,9 @@ Notifications.configure = function(options: Object) {
 		this._requestPermissions();
 	}
 
+        if (Platform.OS === 'android' && typeof options.alternativeMessageFields !== 'undefined') {
+                this.callNative('setAlternativeMessageFields', [options.alternativeMessageFields]);
+        }
 };
 
 /* Unregister */

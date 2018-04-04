@@ -108,6 +108,11 @@ NotificationsComponent.prototype.clearAllNotifications = function() {
 	RNPushNotification.clearAllNotifications()
 }
 
+NotificationsComponent.prototype.setAlternativeMessageFields = function(fields: Array) {
+        RNPushNotification.setAlternativeMessageFields({ messageFields: fields });
+};
+
+
 module.exports = {
 	state: false,
 	component: new NotificationsComponent()

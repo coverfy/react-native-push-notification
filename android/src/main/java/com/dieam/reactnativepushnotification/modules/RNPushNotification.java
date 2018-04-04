@@ -198,4 +198,17 @@ public class RNPushNotification extends ReactContextBaseJavaModule implements Ac
     public void registerNotificationActions(ReadableArray actions) {
         registerNotificationsReceiveNotificationActions(actions);
     }
+
+    @ReactMethod
+    public void setAlternativeMessageFields(ReadableMap fields) {
+        ReadableArray messageFields = fields.getArray("messageFields");
+        String[] messageFieldNames = new String[messageFields.size()];
+        for (int i = 0; i < messageFields.size(); ++i) {
+            messageFieldNames[i] = messageFields.getString(i);
+        }
+
+        mRNPushNotificationHelper.setAlternativeMessageFields(messageFieldNames);
+    }
+
+
 }

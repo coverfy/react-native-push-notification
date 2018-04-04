@@ -34,6 +34,7 @@ import static com.dieam.reactnativepushnotification.modules.RNPushNotificationAt
 public class RNPushNotificationHelper {
     public static final String PREFERENCES_KEY = "rn_push_notification";
     private static final long DEFAULT_VIBRATION = 300L;
+    private String[] messageFields = new String[]{"mp_message", "twi_body"};
 
     private Context context;
     private final SharedPreferences scheduledNotificationsPersistence;
@@ -70,6 +71,10 @@ public class RNPushNotificationHelper {
         notificationIntent.putExtras(bundle);
 
         return PendingIntent.getBroadcast(context, notificationID, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+
+    public void setAlternativeMessageFields(String[] fields) {
+        messageFields = fields;
     }
 
     public void sendNotificationScheduled(Bundle bundle) {
@@ -136,13 +141,23 @@ public class RNPushNotificationHelper {
                 return;
             }
 
-            if (bundle.getString("message") == null && bundle.getString("mp_message") != null) {
-                bundle.putString("message", bundle.getString("mp_message"));
-            } else if (bundle.getString("message") == null) {
+            String message = null;
+            if (bundle.getString("message") != null) {
+                message = bundle.getString("message");
+            } else if(messageFields != null) {
+                for (int i = 0; i < messageFields.length; ++i) {
+                    if (bundle.getString(messageFields[i]) != null) {
+                        message = bundle.getString(messageFields[i]);
+                        break;
+                    }
+                }
+            }
+            if (message == null) {
                 // this happens when a 'data' notification is received - we do not synthesize a local notification in this case
                 Log.d(LOG_TAG, "Cannot send to notification centre because there is no 'message' field in: " + bundle);
                 return;
             }
+            bundle.putString("message", message);
 
             String notificationIdString = bundle.getString("id");
             if (notificationIdString == null) {
